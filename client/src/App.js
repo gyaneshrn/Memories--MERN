@@ -1,58 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Container, AppBar, Grid, Grow, Typography } from "@material-ui/core";
-import { useDispatch } from "react-redux";
-
-import { getPosts } from "./actions/posts";
-import memories from "./components/images/memories.png";
-import Form from "./components/Form/Form";
-import Post from "./components/Posts/Post/Post";
-import Posts from "./components/Posts/Posts";
-
-import useStyle from "./style.js";
+import { Container } from "@material-ui/core";
+import NavBar from "./components/NavBar/Navbar";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import Home from "./components/Home/Home";
+import Auth from "./components/Auth/Auth";
 
 const App = () => {
-  const [currentId, setCurrentId] = useState(null);
-  const classes = useStyle();
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getPosts());
-    return () => {
-      // cleanup;
-    };
-  }, [currentId, dispatch]);
   return (
-    <Container maxWidth="xl" spacing={4}>
-      <AppBar className={classes.appBar} position="static" color="inherit">
-        <Typography className={classes.heading} variant="h2" align="center">
-          Memories
-        </Typography>
-        <img
-          className={classes.image}
-          src={memories}
-          height="60"
-          alt="memories"
-        ></img>
-      </AppBar>
-      <Grow in>
-        <Container>
-          <Grid
-            className={classes.mainContianer}
-            container
-            justifyContent="center"
-            alignItems="stretch"
-            spacing={2}
-          >
-            <Grid item xs={12} sm={7}>
-              <Posts setCurrentId={setCurrentId} />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Form currentId={currentId} setCurrentId={setCurrentId} />
-            </Grid>
-          </Grid>
-        </Container>
-      </Grow>
-    </Container>
+    <BrowserRouter>
+      <Container maxWidth="lg" spacing={4}>
+        <NavBar />
+        <Switch>
+          <Route path="/" exact component={Home} />
+          <Route path="/auth" exact component={Auth} />
+        </Switch>
+      </Container>
+    </BrowserRouter>
   );
 };
 
