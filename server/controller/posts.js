@@ -54,21 +54,25 @@ export const deletePost = async (req, res) => {
 
 export const likedPost = async (req, res) => {
   const { id: _id } = req.params;
-  console.log(">>> like req", _id);
   if (!mongoose.Types.ObjectId.isValid(_id))
     return res.status(404).json({ message: "Invalid Object Id" });
 
+  if (!req.userId) return res.json({ message: "Unaunthicated" });
+
   try {
     const post = await PostMessage.findById(_id);
-    const newPost = await PostMessage.findByIdAndUpdate(
-      _id,
-      {
-        likeCount: post.likeCount + 1,
-      },
-      {
-        new: true,
-      }
-    );
+
+    const index = post.likes.findIndex((id) => id === String(req.userId));
+
+    if (req.userId !== _id) {
+      post.likes.push(req.userId);
+    } else {
+      post.likes = post.likes.filter((id) => id !== String(req.userId));
+    }
+
+    const newPost = await PostMessage.findByIdAndUpdate(_id, post, {
+      new: true,
+    });
     // console.log("updated like post:::::>>>", newPost);
     res.status(200).json(newPost);
   } catch (err) {

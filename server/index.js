@@ -4,7 +4,9 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
-import router from "./Router/Router.js";
+import postRouter from "./Router/posts.js";
+import userRouter from "./Router/users.js";
+
 import PostMessage from "./models/PostMessage.js";
 
 const app = express();
@@ -13,7 +15,8 @@ app.use(express.json({ limit: "30mb", extended: true }));
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
 
-app.use("/posts", router);
+app.use("/posts", postRouter);
+app.use("/users", userRouter);
 
 const CONNECTION_URL = `mongodb+srv://${process.env.username}:${process.env.password}@cluster0.vao7j.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const PORT = process.env.PORT || 5000;
